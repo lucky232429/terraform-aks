@@ -1,0 +1,15 @@
+variables:
+- name: acr_path
+  value: <acr path>
+- name: ingressenv
+  value: <env name>
+- name: appname
+  value: <app name>
+- name: replicas
+  value: 1
+- name: agic-fqdn
+  value: <fqdn name>
+- name: tlsSecret
+  value: <tls secret name>
+- name: nameSpace
+  value: <namespace name>
