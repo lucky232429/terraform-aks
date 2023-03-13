@@ -17,7 +17,7 @@ variables:
 #     value: '<pool name>'
   - name: dockerRegistryServiceConnection
     value: '<ACR Service Connection Name>'
-  - template: /apps/nginx-app/var.yaml
+  - template: /apps/var.yaml
 
 stages:
   - stage: Publish
@@ -35,7 +35,7 @@ stages:
             emptyValue: '""'
         - task: PublishPipelineArtifact@1
           inputs:
-            artifactName: '$(System.DefaultWorkingDirectory)/nginx-app'
+            artifactName: '$(System.DefaultWorkingDirectory)'
             path: 'manifests'
 
   - stage: Build
@@ -99,7 +99,7 @@ stages:
             - task: DownloadPipelineArtifact@2
               inputs:
                 artifactName: 'manifests'
-                downloadPath: '$(System.ArtifactsDirectory)/nginx-app'
+                downloadPath: '$(System.ArtifactsDirectory)'
             - task: Kubernetes@1
               displayName: kubectl apply using arguments
               inputs:
@@ -108,4 +108,4 @@ stages:
                 azureResourceGroup: <resource group name>
                 kubernetesCluster: <aks cluster name>
                 command: apply
-                arguments: -f $(System.ArtifactsDirectory)/nginx-app/k8s.yaml
+                arguments: -f $(System.ArtifactsDirectory)/k8s.yaml
