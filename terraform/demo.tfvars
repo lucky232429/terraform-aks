@@ -1,5 +1,5 @@
 resource_group_name         = "code-challenge-rg"
-location                    = "southindia"
+location                    = "eastus"
 Environment                 = "Demo"
 Created_By                  = "Chandra"
 
