@@ -1,0 +1,108 @@
+
+trigger: none
+pr: none
+
+pool:
+  name: $(poolName)
+  demands:
+    - agent.name -equals $(vmImageName)
+
+variables:
+  - name: vmImageName
+    value: '<ado agent name>'
+  - name: poolName
+    value: '<pool name>'
+  - name: dockerRegistryServiceConnection
+    value: '<ACR Service Connection Name>'
+  - template: /apps/nginx-app/var.yaml
+
+stages:
+  - stage: Publish
+    displayName: Publish Manifests
+    jobs:  
+    - job: Publish
+      displayName: Publish Manifests
+      steps:
+        - task: replacetokens@3
+          displayName: 'Replace tokens in k8s.yml file'
+          inputs:
+            rootDirectory: apps/nginx-app
+            targetFiles: k8s.yml
+            useLegacyPattern: true
+            emptyValue: '""'
+        - task: PublishPipelineArtifact@1
+          inputs:
+            artifactName: '$(System.DefaultWorkingDirectory)/nginx-app'
+            path: 'manifests'
+
+  - stage: Build
+    displayName: Build and push Image
+    jobs:  
+    - job: Build
+      displayName: Build Image
+      steps:
+      - task: Docker@2
+        displayName: Build and push aDockern image to container registry
+        inputs:
+          command: buildAndPush
+          repository: $(appname)-repo
+          dockerfile: /Dockerfile
+          containerRegistry: $(dockerRegistryServiceConnection)
+          tags: '$(Build.DefinitionName)-$(Build.BuildNumber)'
+
+  - stage: Ingress_Controller
+    displayName: Ingress Controller Deployment
+    dependsOn: Publish
+    jobs:
+    - job: Ingress_Controller
+      displayName: Ingress Controller Deployment
+      steps:
+      - task: AzureKeyVault@2    # This task need aks is private cluster . If it is public aks cluster variable group is enough , this task is not required in that case.
+        inputs:
+          azureSubscription: '<ADO ARM Service Connection Name>'
+          KeyVaultName: '<Azure Keyvault Name>'
+          SecretsFilter: '*'
+          RunAsPreJob: false
+      - task: HelmInstaller@0
+        displayName: 'Install Helm'
+        inputs:
+          helmVersion: <helm version>
+      - task: AzureCLI@2
+        displayName: 'Azure CLI '
+        inputs:
+          azureSubscription: $(azureSubscriptionEndpoint)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            az login --service-principal -u $(client-id) -p $(client-secret) --tent $(tenantid) # these details will get from azure keyvault
+            az account set --subscription $subscriptionid
+            az aks get-credentials --name <aks cluster name> --resource-group <resource group name> --admin
+            helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+            helm repo update
+            helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --create-namespace --namespace nginx-app
+
+  - stage: Deploy
+    displayName: Deploy
+    dependsOn: Ingress_Controller
+    jobs:
+    - deployment: Deploy
+      displayName: Deploy
+      environment:
+        name: 'demo'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: DownloadPipelineArtifact@2
+              inputs:
+                artifactName: 'manifests'
+                downloadPath: '$(System.ArtifactsDirectory)/nginx-app'
+            - task: Kubernetes@1
+              displayName: kubectl apply using arguments
+              inputs:
+                connectionType: Azure Resource Manager
+                azureSubscriptionEndpoint: <ADO ARM service connection name>
+                azureResourceGroup: <resource group name>
+                kubernetesCluster: <aks cluster name>
+                command: apply
+                arguments: -f $(System.ArtifactsDirectory)/nginx-app/k8s.yaml
