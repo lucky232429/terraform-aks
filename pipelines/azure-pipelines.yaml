@@ -2,16 +2,19 @@
 trigger: none
 pr: none
 
+# pool:
+#   name: $(poolName)
+#   demands:
+#     - agent.name -equals $(vmImageName)
+
 pool:
-  name: $(poolName)
-  demands:
-    - agent.name -equals $(vmImageName)
+  vmImage: 'ubuntu-latest'
 
 variables:
-  - name: vmImageName
-    value: '<ado agent name>'
-  - name: poolName
-    value: '<pool name>'
+#   - name: vmImageName
+#     value: '<ado agent name>'
+#   - name: poolName
+#     value: '<pool name>'
   - name: dockerRegistryServiceConnection
     value: '<ACR Service Connection Name>'
   - template: /apps/nginx-app/var.yaml
