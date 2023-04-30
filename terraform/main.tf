@@ -14,8 +14,8 @@ module "vnet" {
   address_space               = var.network_address_space
   address_prefixes            = var.aks_subnet_prefixes
   subnet_name                 = var.aks_subnet_name
-  /* appgw_subnet_address_prefix = var.appgw_subnet_address_prefix
-  appgw_subnet_address_name   = var.appgw_subnet_address_name */
+  appgw_subnet_address_prefix = var.appgw_subnet_address_prefix
+  appgw_subnet_address_name   = var.appgw_subnet_address_name
   Environment                 = var.Environment
   Created_By                  = var.Created_By
 
@@ -49,7 +49,7 @@ module "aks" {
   private_cluster_enabled          = false # default value
   enable_http_application_routing  = true
   enable_auto_scaling              = true
-  /* agic_subnet_id                   = module.vnet.appgw_subnet_id */
+  agic_subnet_id                   = module.vnet.appgw_subnet_id
   Environment                      = var.Environment
   Created_By                       = var.Created_By
   log_analytics_workspace_id       = module.log-analytics.id
