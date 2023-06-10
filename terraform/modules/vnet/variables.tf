@@ -1,26 +1,13 @@
-variable "resource_group_name" {
-  description = "Name of the Azure Resource Group to create"
-  type        = string
-}
+variable "resource_group_name" {}
 
-variable "resource_group_location" {
-  description = "Location of the Azure Resource Group"
-  type        = string
-}
+variable "location" {}
 
-variable "vnet_name" {
-  description = "Name of the Azure Virtual Network to create"
-  type        = string
-}
+variable "vnet_name" {}
 
-variable "address_space" {
-  description = "The address space that the Azure Virtual Network will use"
-  type        = list(string)
-}
+variable "Environment" {}
 
-/* variable "subnets" {
-  default = {
-    aks_subnet = "10.0.1.0/24"
-    appgw_subnet = "10.0.2.0/24"
-  }
-} */
+variable "Created_By" {}
+
+variable "aks_subnet_name" {}
+
+variable "vnet_address_space" {}

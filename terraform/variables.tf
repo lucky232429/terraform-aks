@@ -10,20 +10,11 @@ variable "vnet_name" {}
 
 variable "aks_subnet_name" {}
 
-variable "network_address_space" {}
-
-variable "aks_subnet_prefixes" {}
+variable "vnet_address_space" {}
 
 variable "kubernetes_version" {}
 
-variable "dns_prefix" {}
-
-
 variable "cluster-name" {}
-
-/* variable "docker_bridge_cidr" {}
-
-variable "dns_service_ip" {} */
 
 variable "log_analytics_workspace_name" {}
 
@@ -33,6 +24,10 @@ variable "log_analytics_workspace_sku" {}
 
 variable "acr_name" {}
 
-/* variable "appgw_subnet_address_prefix" {}
+variable "vm_size" {}
 
-variable "appgw_subnet_address_name" {} */
+variable "node_count" {}
+
+variable "load_balancer_sku" {}
+
+variable "key_vault_name" {}

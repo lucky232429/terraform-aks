@@ -2,7 +2,7 @@ data "azurerm_client_config" "current" {}
 
 data "azurerm_key_vault" "keyvault" {
   name                = var.key_vault_name
-  resource_group_name = var.common_rg_name
+  resource_group_name = var.akv_resource_group_name
 }
 
 data "azurerm_key_vault_secret" "client-id" {
@@ -28,7 +28,7 @@ data "azurerm_subnet" "aks_subnet" {
 
 resource "azurerm_kubernetes_cluster" "aks" {
   name                    = var.cluster_name
-  location                = var.resource_group_location
+  location                = var.location
   resource_group_name     = var.resource_group_name
   dns_prefix              = var.cluster_name
   kubernetes_version      = var.kubernetes_version
@@ -72,7 +72,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
   } */
 
   tags = {
-    Terraform = "true"
+    "Terraform" = "true"
+    "Environment"         = var.Environment
+    "Created By"          = var.Created_By
   }
 }
 

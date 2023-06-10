@@ -1,13 +1,9 @@
-data "azurerm_resource_group" "rg" {
-  name = "Terraform-State-RG"
-}
-
 resource "azurerm_container_registry" "acr" {
   name                = "${var.acr_name}acr"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = var.resource_group_name
+  location            = var.location
   sku                 = "Premium"
-  admin_enabled       = true
+  admin_enabled       = false
 
   tags = {
     "Environment"         = var.Environment

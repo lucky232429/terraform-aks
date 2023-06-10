@@ -6,10 +6,10 @@ terraform {
     }
   }
   backend "azurerm" {
-    storage_account_name        = ""
-    resource_group_name         = ""
-    container_name              = ""
-    key                         = ""
+    storage_account_name        = "chnterraformaksdemo"
+    resource_group_name         = "Terraform-Remote-State-RG"
+    container_name              = "tfstate"
+    key                         = "demo.tfstate"
   }
 }
 

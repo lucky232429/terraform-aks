@@ -1,20 +1,21 @@
 resource_group_name         = "Terraform-AKS-Demo"
-location                    = "eastus"
+location     = "eastus"
 Environment                 = "Demo"
-Created_By                  = "Chandra"
+Created_By                  = "Terraform"
 
 /* Vnet values: */
 vnet_name                   = "code-challenge-vnet"
 aks_subnet_name             = "aks-subnet"
-network_address_space       = ["172.16.0.0/16"]
-aks_subnet_prefixes         = ["172.16.0.0/24"]
-appgw_subnet_address_prefix = ["172.16.52.0/24"]
-appgw_subnet_address_name   = "appgw"
+vnet_address_space          = ["10.0.0.0/8"]
+vm_size                     = "Standard_D2_v2"
+node_count                  = "1"
+load_balancer_sku           = "standard"
+
+key_vault_name              = "terraform-demo-akv"
 
 /* Kubernetes values */
-kubernetes_version          = "1.23.5"
+kubernetes_version          = "1.25.6"
 cluster-name                = "code-challenge-aks"
-dns_prefix                  = "code-challenge"
 
 /* Acr */
 acr_name                    = "codechallengechn"
